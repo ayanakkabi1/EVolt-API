@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('charging_stations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('latitude');
-            $table->integer('longitude');
+            $table->double('latitude');
+            $table->double('longitude');
             $table->string('connector_type');
             $table->boolean('is_available');
             $table->timestamps();
