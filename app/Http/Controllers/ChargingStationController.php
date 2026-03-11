@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreChargingStationRequest;
 use App\Models\ChargingStation;
 use Illuminate\Http\Request;
 
@@ -26,9 +27,17 @@ class ChargingStationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreChargingStationRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['is_available'] = $data['is_available'] ?? true;
+
+        $chargingStation = ChargingStation::create($data);
+
+        return response()->json([
+            'message' => 'Charging station created successfully',
+            'data' => $chargingStation,
+        ], 201);
     }
 
     /**
