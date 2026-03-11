@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reservation extends Model
 {
-    protected $fillable = ['user_id', 'station_id', 'start_time', 'duration', 'status'];
+    protected $fillable = ['user_id', 'charging_station_id', 'start_time', 'duration', 'status'];
 
     /**
      * Get the user associated with this reservation.
@@ -19,11 +19,11 @@ class Reservation extends Model
     }
 
     /**
-     * Get the station associated with this reservation.
+     * Get the charging station associated with this reservation.
      */
-    public function station(): BelongsTo
+    public function chargingStation(): BelongsTo
     {
-        return $this->belongsTo(Station::class);
+        return $this->belongsTo(ChargingStation::class);
     }
 
     /**
