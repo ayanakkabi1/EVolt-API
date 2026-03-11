@@ -25,7 +25,7 @@ class ReservationRequest extends FormRequest
             'charging_station_id' => 'required|exists:charging_stations,id',
             'start_time' => 'required|date',
             'duration' => 'required|integer|min:1',
-            'status' => 'nullable|in:pending,confirmed,cancelled'
+            'status' => 'string|nullable'
         ];
     }
 }
