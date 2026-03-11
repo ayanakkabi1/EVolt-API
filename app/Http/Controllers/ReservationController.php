@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReservationRequest;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -20,15 +22,33 @@ class ReservationController extends Controller
      */
     public function create()
     {
-        
+        //
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ReservationRequest $request)
     {
-        //
+        $userId = Auth::user()?->id;
+
+        if (!$userId) {
+            return response()->json([
+                'message' => 'Unauthenticated',
+            ], 401);
+        }
+
+        $data = $request->validated();
+        $data['user_id'] = $userId;
+        $data['status'] = $data['status'] ?? 'pending';
+
+        $reservation = Reservation::create($data);
+
+        return response()->json([
+            'message' => 'Reservation created successfully',
+            'data' => $reservation,
+        ], 201);
     }
 
     /**
