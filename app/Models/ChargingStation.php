@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ChargingStation extends Model
 {
-    protected $fillable = ['name', 'latitude', 'longitude', 'connector_type', 'is_available'];
+    protected $fillable = ['name', 'location', 'latitude', 'longitude', 'connector_type', 'is_available'];
 
     /**
      * Get the charging sessions for this station.
