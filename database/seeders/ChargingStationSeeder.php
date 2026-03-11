@@ -15,6 +15,7 @@ class ChargingStationSeeder extends Seeder
     {
         ChargingStation::create([
             'name' => 'Station Alpha',
+            'location' => 'Paris Center',
             'latitude' => 48.8566,
             'longitude' => 2.3522,
             'connector_type' => 'Type 2',
@@ -23,6 +24,7 @@ class ChargingStationSeeder extends Seeder
 
         ChargingStation::create([
             'name' => 'Station Beta',
+            'location' => 'Paris East',
             'latitude' => 48.8626,
             'longitude' => 2.2913,
             'connector_type' => 'CCS',
@@ -31,6 +33,7 @@ class ChargingStationSeeder extends Seeder
 
         ChargingStation::create([
             'name' => 'Station Gamma',
+            'location' => 'Paris Northeast',
             'latitude' => 48.8412,
             'longitude' => 2.4013,
             'connector_type' => 'Type 2',
