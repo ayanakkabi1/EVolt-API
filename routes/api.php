@@ -15,5 +15,5 @@ Route::post('logout',[UserAuthController::class,'logout'])
   ->middleware('auth:sanctum');
 Route::post('create',[ReservationController::class,'store'])
   ->middleware('auth:sanctum');
-Route::post('create-charging-stations', [ChargingStationController::class, 'store'])
+Route::post('charging-stations', [ChargingStationController::class, 'store'])
   ->middleware('auth:sanctum');
