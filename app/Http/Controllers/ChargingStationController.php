@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreChargingStationRequest;
 use App\Models\ChargingStation;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class ChargingStationController extends Controller
@@ -11,6 +12,7 @@ class ChargingStationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use AuthorizesRequests;
     public function index()
     {
          $stations = ChargingStation::all();
@@ -34,6 +36,7 @@ class ChargingStationController extends Controller
      */
     public function store(StoreChargingStationRequest $request)
     {
+        $this->authorize('create');
         $data = $request->validated();
         $data['is_available'] = $data['is_available'] ?? true;
 
@@ -69,6 +72,7 @@ class ChargingStationController extends Controller
      */
     public function update(StoreChargingStationRequest $request, ChargingStation $chargingStation)
     {
+        $this->authorize('update', $chargingStation);
         $data = $request->validated();
 
         $chargingStation->update($data);
@@ -84,7 +88,10 @@ class ChargingStationController extends Controller
      */
     public function destroy(ChargingStation $chargingStation)
     {
-        //
+        $this->authorize('delete', $chargingStation);
+        $chargingStation->delete();
+        return response()->json([
+            'message' => 'charging station deleted successfully' ,
+        ],200);
     }
 }
-
