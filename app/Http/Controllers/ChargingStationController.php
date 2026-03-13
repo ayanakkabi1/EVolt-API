@@ -48,19 +48,11 @@ class ChargingStationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ChargingStation $chargingStation,$id)
+    public function show(ChargingStation $chargingStation,)
     {
-        $station = ChargingStation::find($id);
-
-        if (!$station) {
-            return response()->json([
-                'message' => 'Charging station not found'
-            ], 404);
-        }
-
         return response()->json([
             'message' => 'Charging station retrieved successfully',
-            'data' => $station
+            'data' => $chargingStation
         ], 200);
     }
 
@@ -75,9 +67,16 @@ class ChargingStationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ChargingStation $chargingStation)
+    public function update(StoreChargingStationRequest $request, ChargingStation $chargingStation)
     {
-        //
+        $data = $request->validated();
+
+        $chargingStation->update($data);
+
+        return response()->json([
+            'message' => 'Charging station updated successfully',
+            'data' => $chargingStation->fresh(),
+        ], 200);
     }
 
     /**
