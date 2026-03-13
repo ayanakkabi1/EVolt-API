@@ -13,7 +13,12 @@ class ChargingStationController extends Controller
      */
     public function index()
     {
-        //
+         $stations = ChargingStation::all();
+
+        return response()->json([
+            'message' => 'Charging stations retrieved successfully',
+            'data' => $stations
+        ], 200);
     }
 
     /**
@@ -43,9 +48,20 @@ class ChargingStationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ChargingStation $chargingStation)
+    public function show(ChargingStation $chargingStation,$id)
     {
-        //
+        $station = ChargingStation::find($id);
+
+        if (!$station) {
+            return response()->json([
+                'message' => 'Charging station not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Charging station retrieved successfully',
+            'data' => $station
+        ], 200);
     }
 
     /**
@@ -72,3 +88,4 @@ class ChargingStationController extends Controller
         //
     }
 }
+
