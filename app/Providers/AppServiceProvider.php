@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        \App\Models\ChargingStation::class => \App\Policies\ChargingStationPolicy::class,
+    ];
     /**
      * Register any application services.
      */
