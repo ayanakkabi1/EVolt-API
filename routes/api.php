@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
       return response()->json([
         'message' => 'Charging station not found'
       ], 404);
-
     });
     Route::post('/charging-stations', [ChargingStationController::class, 'store']);
+    Route::apiResource('reservations', ReservationController::class);
 });
