@@ -29,5 +29,12 @@ Route::middleware('auth:sanctum')->group(function () {
       ], 404);
 
     });
+    Route::delete('charging-station/{chargingStation}',[ChargingStationController::class,'destroy'])
+    ->missing(function(){
+      return response()->json([
+        'message' => 'Charging station not found'
+      ], 404);
+
+    });
     Route::post('/charging-stations', [ChargingStationController::class, 'store']);
 });
