@@ -12,9 +12,20 @@ class ReservationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Reservation $reservation)
     {
-        //
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Non authentifié'], 401);
+        }
+
+        if ($user->role === 'admin') {
+            $reservations = Reservation::all();
+            return response()->json($reservations);
+        }
+
+        $reservations = Reservation::forUser($user->id)->get();
+        return response()->json($reservations);
     }
 
     /**
@@ -56,7 +67,10 @@ class ReservationController extends Controller
      */
     public function show(Reservation $reservation)
     {
-        //
+        return response()->json([
+            'message' => 'Charging station retrieved successfully',
+            'data' => $reservation
+        ]);
     }
 
     /**
@@ -70,9 +84,20 @@ class ReservationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Reservation $reservation)
+    public function update(ReservationRequest $request, Reservation $reservation)
     {
-        //
+        $user = Auth::user();
+        if ($user->id !== $reservation->user_id) {
+            return response()->json(['message' => 'Ce n\'est pas votre réservation !'], 403);
+        }
+        $data = $request->validated();
+
+        $reservation->update($data);
+
+        return response()->json([
+            'message' => 'Reservation updated successfully',
+            'data' => $reservation->fresh(),
+        ], 200);
     }
 
     /**
@@ -80,6 +105,28 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
-        //
+        $user = Auth::user();
+        if ($user->id !== $reservation->user_id) {
+            return response()->json(['message' => 'Ce n\'est pas votre réservation !'], 403);
+        }
+        $reservation->delete();
+
+        return response()->json([
+            'message' => 'Reservation deleted successfully',
+            'data' => $reservation->fresh(),
+        ], 200);
+    }
+    public function pay(Reservation $reservation){
+        $user = Auth::user();
+        if ($user->id !== $reservation->user_id) {
+            return response()->json(['message' => 'Ce n\'est pas votre réservation !'], 403);
+        }
+        if($reservation->status==='confirmed'){
+            return response()->json(['message' => 'Cette réservation est déjà payée/confirmée.'], 400);
+        }
+        elseif($reservation->status==='pending'){
+            
+        }
+
     }
 }
