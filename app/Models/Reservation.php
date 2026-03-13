@@ -33,4 +33,8 @@ class Reservation extends Model
     {
         return $this->hasMany(ChargingSession::class);
     }
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
 }
