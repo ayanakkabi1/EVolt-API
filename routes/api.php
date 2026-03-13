@@ -11,9 +11,23 @@ Route::get('/user', function (Request $request) {
 
 Route::post('register',[UserAuthController::class,'register']);
 Route::post('login',[UserAuthController::class,'login']);
-Route::post('logout',[UserAuthController::class,'logout'])
-  ->middleware('auth:sanctum');
-Route::post('create',[ReservationController::class,'store'])
-  ->middleware('auth:sanctum');
-Route::post('/charging-stations', [ChargingStationController::class, 'store'])
-  ->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [UserAuthController::class, 'logout']);
+    Route::post('create', [ReservationController::class, 'store']);
+
+    Route::get('/charging-stations', [ChargingStationController::class, 'index']);
+    Route::get('/charging-stations/{chargingStation}', [ChargingStationController::class, 'show'])
+    ->missing(function(){
+      return response()->json([
+        'message' => 'Charging station not found'
+      ], 404);
+    });
+    Route::PUT('charging-station/{chargingStation}',[ChargingStationController::class,'update'])
+    ->missing(function(){
+      return response()->json([
+        'message' => 'Charging station not found'
+      ], 404);
+
+    });
+    Route::post('/charging-stations', [ChargingStationController::class, 'store']);
+});
