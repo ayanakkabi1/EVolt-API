@@ -116,17 +116,19 @@ class ReservationController extends Controller
             'data' => $reservation->fresh(),
         ], 200);
     }
-    public function pay(Reservation $reservation){
+    public function pay(Reservation $reservation,$id){
         $user = Auth::user();
+        $reservation = Reservation::findOrFail($id);
         if ($user->id !== $reservation->user_id) {
             return response()->json(['message' => 'Ce n\'est pas votre réservation !'], 403);
         }
         if($reservation->status==='confirmed'){
-            return response()->json(['message' => 'Cette réservation est déjà payée/confirmée.'], 400);
+            return response()->json(['message' => 'Cette réservation est déjà payée.'], 400);
         }
         elseif($reservation->status==='pending'){
-            
-        }
-
+            Reservation::where('id',$id)->where('status','pending')
+                                        ->update(['status' => 'confirmed']);
+            return response()->json(['message'=>'Cette réservation est payée avec succès'], 200);
+        } 
     }
 }
