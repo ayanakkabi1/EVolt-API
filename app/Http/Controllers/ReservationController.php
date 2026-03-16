@@ -116,19 +116,81 @@ class ReservationController extends Controller
             'data' => $reservation->fresh(),
         ], 200);
     }
-    public function pay(Reservation $reservation,$id){
+    public function pay(Reservation $reservation)
+    {
         $user = Auth::user();
-        $reservation = Reservation::findOrFail($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
         if ($user->id !== $reservation->user_id) {
             return response()->json(['message' => 'Ce n\'est pas votre réservation !'], 403);
         }
-        if($reservation->status==='confirmed'){
+
+        if ($reservation->status === 'confirmed') {
             return response()->json(['message' => 'Cette réservation est déjà payée.'], 400);
         }
-        elseif($reservation->status==='pending'){
-            Reservation::where('id',$id)->where('status','pending')
-                                        ->update(['status' => 'confirmed']);
-            return response()->json(['message'=>'Cette réservation est payée avec succès'], 200);
-        } 
+
+        if ($reservation->status === 'pending') {
+            $reservation->update(['status' => 'confirmed']);
+
+            return response()->json([
+                'message' => 'Cette réservation est payée avec succès',
+                'data' => $reservation->fresh(),
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Le statut de cette réservation ne permet pas le paiement.',
+        ], 422);
+    }
+
+    public function cancel(Reservation $reservation)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        if ($user->id !== $reservation->user_id) {
+            return response()->json(['message' => 'Ce n\'est pas votre réservation !'], 403);
+        }
+
+        if ($reservation->status === 'confirmed') {
+            return response()->json(['message' => 'Cette réservation est déjà payée, annulation impossible.'], 400);
+        }
+
+        if ($reservation->status === 'cancelled') {
+            return response()->json(['message' => 'Cette réservation est déjà annulée.'], 400);
+        }
+
+        if ($reservation->status === 'pending') {
+            $reservation->update(['status' => 'cancelled']);
+
+            return response()->json([
+                'message' => 'Cette réservation a été annulée avec succès',
+                'data' => $reservation->fresh(),
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Le statut de cette réservation ne permet pas l\'annulation.',
+        ], 422);
+    }
+    public function dashboard()
+    {
+        return response()->json([
+            'stats' => [
+                'total'    => Reservation::count(),
+                'payee'    => Reservation::where('status', 'payee')->count(),
+                'en_cours' => Reservation::where('status', 'en_cours')->count(),
+            ],
+            'last_reservations' => Reservation::with(['user:id,name', 'chargingStation:id,name'])
+                ->latest()
+                ->take(10)
+                ->get()
+        ]);
     }
 }
