@@ -37,4 +37,5 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/charging-stations', [ChargingStationController::class, 'store']);
     Route::apiResource('reservations', ReservationController::class);
+    Route::post('/reservations/{reservation}/pay', [ReservationController::class, 'pay']);
 });
